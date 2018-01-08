@@ -27,6 +27,9 @@
     <ClInclude Include="..\..\..\..\..\_Rick%27s\haskell\EXEandDLL\TheDll\TheDll\TheDll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\_Rick%27s\haskell\EXEandDLL\TheDll\TheDll\HeyHo_stub.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\_Rick%27s\haskell\EXEandDLL\TheDll\TheDll\stdafx.cpp">

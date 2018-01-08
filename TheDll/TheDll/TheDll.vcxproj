@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\_Rick%27s\Scintilla\scite402\scintilla\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\_Rick%27s\Scintilla\scite402\scintilla\include;C:\Program Files\Haskell Platform\8.0.1\lib\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -147,6 +147,7 @@
     <Text Include="..\..\..\..\..\_Rick%27s\haskell\EXEandDLL\TheDll\TheDll\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\_Rick%27s\haskell\EXEandDLL\TheDll\TheDll\HeyHo_stub.h" />
     <ClInclude Include="..\..\..\..\..\_Rick%27s\haskell\EXEandDLL\TheDll\TheDll\stdafx.h" />
     <ClInclude Include="..\..\..\..\..\_Rick%27s\haskell\EXEandDLL\TheDll\TheDll\targetver.h" />
     <ClInclude Include="..\..\..\..\..\_Rick%27s\haskell\EXEandDLL\TheDll\TheDll\TheDll.h" />

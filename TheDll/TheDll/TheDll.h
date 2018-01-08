@@ -12,10 +12,17 @@
 
 extern "C"
 {
-	THEDLL_API int fnTheDll(HWND parent);
+	THEDLL_API int __cdecl fnTheDll(HWND parent);
+	THEDLL_API void* __cdecl GetFnPtr();
+	THEDLL_API void __cdecl SetFnPtr(void* fnPtr);
+	THEDLL_API int __cdecl UseFnPtr(int n);
+	THEDLL_API int __cdecl HookWindow();
+	THEDLL_API void __cdecl UnhookWindow();
 }
 
 LRESULT SendEditor(UINT Msg, WPARAM wParam = 0, LPARAM lParam = 0);
 
 void SetAStyle(int style, COLORREF fore, COLORREF back = RGB(255, 255, 255), int size = -1, const TCHAR *face = 0);
 void ConfigureEditor();
+
+int MyDouble(int n);

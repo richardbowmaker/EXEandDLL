@@ -5,6 +5,7 @@
 #include "TheClient.h"
 
 #include <TheDll.h>
+#include <tchar.h>
 
 #define MAX_LOADSTRING 100
 
@@ -19,6 +20,24 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+HHOOK hhk = 0;
+
+LRESULT CALLBACK MessageProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+//	if (nCode != 0)
+	{
+		TCHAR buff[100];
+		_stprintf(buff, _T("Message %I64x %I64x %I64x\n"), nCode, wParam, lParam);
+		OutputDebugString(buff);
+		
+	}
+	if (wParam == WM_NOTIFY)
+	{
+		OutputDebugString(_T("Got a notify message !!!!!!!!!!!!!!!!!\n"));
+	}
+	return CallNextHookEx(hhk, nCode, wParam, lParam);
+}
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -40,8 +59,24 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-	int n = fnTheDll(hWnd);
+	/*
+	int a = sizeof(LRESULT);
+	unsigned long long x = sizeof(&MyRegisterClass);
 
+
+//	int n = fnTheDll(hWnd);
+
+
+	void* p = GetFnPtr();
+
+	typedef int(*MyDouble)(int);
+
+	MyDouble fptr = reinterpret_cast<MyDouble>(p);
+
+	int b = fptr(6);
+	*/
+
+	hhk = SetWindowsHookEx(WH_CALLWNDPROC, &MessageProc, 0, ::GetCurrentThreadId());
 
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_THECLIENT));
@@ -57,6 +92,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
+
+	UnhookWindowsHookEx(hhk);
+
+
+
 
     return (int) msg.wParam;
 }
@@ -114,6 +154,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
+
+   HWND hwnd1 = CreateWindow(szWindowClass, szTitle, WS_CHILD | WS_OVERLAPPEDWINDOW,
+	   CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, hWnd, nullptr, hInstance, nullptr);
+
+   ShowWindow(hwnd1, nCmdShow);
+   UpdateWindow(hwnd1);
+
+   SendMessage(hwnd1, WM_NOTIFY, 0x12, 0x34);
+
+
    return TRUE;
 }
 
@@ -154,6 +204,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
             EndPaint(hWnd, &ps);
+
+			SendMessage(hWnd, WM_NOTIFY, 0x12, 0x34);
         }
         break;
     case WM_DESTROY:

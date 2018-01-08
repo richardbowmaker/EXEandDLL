@@ -9,7 +9,7 @@
 
 #include "Scintilla.h"
 #include "SciLexer.h"
-
+#include "HeyHo_stub.h"
 
 
 HWND hScn = NULL;
@@ -27,6 +27,8 @@ THEDLL_API int fnTheDll(HWND parent)
 
 	HINSTANCE hLib = ::LoadLibrary(_T("SciLexer64.DLL"));
 
+	HMODULE hMod = GetModuleHandle(NULL);
+
 	HWND hScn = ::CreateWindow(
 		_T("Scintilla"),
 		_T("Source"),
@@ -35,7 +37,8 @@ THEDLL_API int fnTheDll(HWND parent)
 		100, 100,
 		parent,
 		0,
-		GetModuleHandle(NULL),
+
+		hMod,
 		0);
 
 	ConfigureEditor();
@@ -46,6 +49,68 @@ THEDLL_API int fnTheDll(HWND parent)
 
     return 42;
 
+}
+
+THEDLL_API void* GetFnPtr()
+{
+	void* p = reinterpret_cast<void*>(&MyDouble);
+	return p;
+}
+
+int MyDouble(int n)
+{
+	return n * 2;
+}
+
+typedef int(*FnPtr)(int);
+
+FnPtr thePtr = 0;
+
+THEDLL_API void __cdecl SetFnPtr(void* fnPtr)
+{
+	thePtr = (FnPtr)fnPtr;
+}
+
+THEDLL_API int __cdecl UseFnPtr(int n)
+{
+	int n3 = (thePtr)(n);
+	return n3;
+}
+
+HHOOK hhk;
+
+LRESULT WINAPI MyHook(int nCode, WPARAM wParam, LPARAM lParam)
+{
+	if (nCode < 0)
+	{
+		return CallNextHookEx(hhk, nCode, wParam, lParam);
+	}
+
+	LPCWPSTRUCT pData = reinterpret_cast<LPCWPSTRUCT>(lParam);
+
+
+	TCHAR buff[100];
+	_stprintf(buff, _T("hook: nCode: %x, msg: %x, wParam: %I64x, lParam: %I64x\n"), nCode, pData->message, pData->wParam, pData->lParam);
+	OutputDebugString(buff);
+
+	if (pData->message == WM_NOTIFY)
+	{
+		OutputDebugString(_T("got a notify !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"));
+		int xx = UseFnPtr(4);
+
+	}
+	return CallNextHookEx(hhk, nCode, wParam, lParam);
+}
+
+THEDLL_API int __cdecl HookWindow()
+{
+	hhk = SetWindowsHookEx(WH_CALLWNDPROC, &MyHook, 0, ::GetCurrentThreadId());
+	return hhk != NULL;
+}
+
+THEDLL_API void __cdecl UnhookWindow()
+{
+	UnhookWindowsHookEx(hhk);
 }
 
 LRESULT SendEditor(UINT Msg, WPARAM wParam, LPARAM lParam)
