@@ -21,10 +21,15 @@ const COLORREF darkBlue = RGB(0, 0, 0x80);
 const COLORREF black = RGB(0, 0, 0);
 const COLORREF white = RGB(0xff, 0xff, 0xff);
 
+struct MyStruct {
+	double d;
+	char c;
+	int32_t i;
+};
+
 // This is an example of an exported function.
 THEDLL_API int fnTheDll(HWND parent)
 {
-
 	HINSTANCE hLib = ::LoadLibrary(_T("SciLexer64.DLL"));
 
 	HMODULE hMod = GetModuleHandle(NULL);
@@ -53,8 +58,48 @@ THEDLL_API int fnTheDll(HWND parent)
 
 THEDLL_API void* GetFnPtr()
 {
-	void* p = reinterpret_cast<void*>(&MyDouble);
-	return p;
+	MyStruct* x = new MyStruct();
+	x->d = 12.345;
+	x->c = 0x30;
+	x->i = 567;
+
+	SCNotification* y = new SCNotification();
+
+	y->nmhdr.hwndFrom	= (void*)0x9999999999999999;
+	y->nmhdr.idFrom		= 0x8888888888888888;
+	y->nmhdr.code		= 0xaaaaaaaa;
+
+	y->position			= 0x1011111111111101;
+	y->ch				= 0x22222222;
+	y->modifiers		= 0x33333333;
+	y->modificationType = 0x44444444;
+	y->text				= (const char*)0x9999999999999999;
+	y->length			= 0x1111111111111111;
+	y->linesAdded		= 0x2222222222222222;
+	y->message			= 0x33333333;
+	y->wParam			= 0x8088888888888808;
+	y->lParam			= 0x3333333333333333;
+	y->line				= 0x4444444444444444;
+	y->foldLevelNow		= 0x55555555;
+	y->foldLevelPrev	= 0x44444444;
+	y->margin			= 0x33333333;
+	y->listType			= 0x22222222;
+	y->x				= 0x11111111;
+	y->y				= 0x77777777;
+	y->token			= 0x66666666;
+	y->annotationLinesAdded = 0x1111111111111111;
+	y->updated				= 0x55555555;
+	y->listCompletionMethod = 0x40444404;
+
+	int z = sizeof(SCNotification);
+
+
+
+	return (void*)y;
+
+
+	//void* p = reinterpret_cast<void*>(&MyDouble);
+	//return p;
 }
 
 int MyDouble(int n)
